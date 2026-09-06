@@ -9,6 +9,28 @@ open class CustomNavigationViewController: UIViewController {
     /// The embedded controller, if this screen was created using the wrapping initializer.
     public let contentViewController: UIViewController?
     private let topBackdrop = UIView()
+    private var didConfigureHeader = false
+    private lazy var fullContentTop = contentLayoutGuide.topAnchor.constraint(equalTo: header.bottomAnchor)
+    private lazy var compactContentTop = contentLayoutGuide.topAnchor.constraint(equalTo: header.topAnchor)
+    private lazy var scrollTracking = LargeTitleScrollCoordinator { [weak self] distance in
+        self?.header.collapse(by: distance)
+    }
+
+    /// Set the primary scroll view to enable scroll-driven large-title collapse.
+    /// Its delegate and existing inset edges remain owned by the caller.
+    public weak var largeTitleScrollView: UIScrollView? {
+        didSet {
+            scrollTracking.attach(largeTitleScrollView)
+            if isViewLoaded { updateLargeTitleLayout() }
+        }
+    }
+
+    /// Override the navigation controller's shared button layout for this screen.
+    public var buttonLayoutOverride: NavigationButtonLayout? {
+        didSet { if isViewLoaded { updateHeaderAppearance() } }
+    }
+
+    private var sourceNavigationItem: UINavigationItem { contentViewController?.navigationItem ?? navigationItem }
 
     public var customNavigationController: CustomNavigationController? {
         navigationController as? CustomNavigationController
@@ -54,11 +76,13 @@ open class CustomNavigationViewController: UIViewController {
             header.topAnchor.constraint(equalTo: safe.topAnchor),
             header.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             header.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            contentLayoutGuide.topAnchor.constraint(equalTo: header.bottomAnchor),
+            fullContentTop,
             contentLayoutGuide.leadingAnchor.constraint(equalTo: safe.leadingAnchor),
             contentLayoutGuide.trailingAnchor.constraint(equalTo: safe.trailingAnchor),
             contentLayoutGuide.bottomAnchor.constraint(equalTo: safe.bottomAnchor)
         ])
+        didConfigureHeader = true
+        header.onMetricsChange = { [weak self] in self?.updateLargeTitleLayout() }
         header.backButton.addTarget(self, action: #selector(goBack), for: .touchUpInside)
         if let content = contentViewController {
             precondition(content.parent == nil, "The content view controller already has a parent.")
@@ -81,23 +105,77 @@ open class CustomNavigationViewController: UIViewController {
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         updateHeaderAppearance()
+        view.bringSubviewToFront(topBackdrop)
+        view.bringSubviewToFront(header)
+    }
+
+    /// Refresh after replacing items or changing navigation-item settings while visible.
+    /// Called automatically after loading and whenever the screen appears.
+    public func reloadNavigationItems() {
+        guard didConfigureHeader else { return }
+        let item = sourceNavigationItem
+        header.title = contentViewController == nil ? item.title ?? title ?? "" : title ?? item.title ?? ""
+        header.showsLargeTitle = wantsLargeTitle
+        let isRoot = navigationController?.viewControllers.first === self
+        let canDismiss = navigationController?.presentingViewController != nil
+        let left = item.leftBarButtonItems ?? []
+        header.backButton.isHidden = navigationController == nil || (isRoot && !canDismiss)
+            || item.hidesBackButton || (!left.isEmpty && !item.leftItemsSupplementBackButton)
+        header.backButton.accessibilityLabel = isRoot && canDismiss
+            ? customNavigationController?.closeButtonAccessibilityLabel ?? "Close"
+            : customNavigationController?.backButtonAccessibilityLabel ?? "Back"
+        header.backButton.setImage(UIImage(systemName: isRoot && canDismiss ? "xmark" : "chevron.backward"), for: .normal)
+        var backTitle: String?
+        if !isRoot, let stack = navigationController?.viewControllers,
+           let index = stack.firstIndex(of: self), index > 0 {
+            let previous = stack[index - 1]
+            let previousItem = (previous as? CustomNavigationViewController)?.sourceNavigationItem ?? previous.navigationItem
+            if previousItem.backButtonDisplayMode != .minimal {
+                backTitle = previousItem.backButtonTitle ?? previousItem.backBarButtonItem?.title
+            }
+        }
+        header.backButton.setTitle(backTitle, for: .normal)
+        header.display(left: left,
+                       right: item.rightBarButtonItems ?? [], titleView: item.titleView)
+        updateLargeTitleLayout()
+    }
+
+    private var wantsLargeTitle: Bool {
+        guard let navigation = customNavigationController, navigation.prefersLargeTitles else { return false }
+        var enabled = true
+        for screen in navigation.viewControllers {
+            let item = (screen as? CustomNavigationViewController)?.sourceNavigationItem ?? screen.navigationItem
+            if item.largeTitleDisplayMode == .always { enabled = true }
+            if item.largeTitleDisplayMode == .never { enabled = false }
+            if screen === self { break }
+        }
+        return enabled
+    }
+
+    private func updateLargeTitleLayout() {
+        guard didConfigureHeader else { return }
+        let tracksScroll = header.showsLargeTitle && largeTitleScrollView != nil
+        compactContentTop.constant = header.compactHeight
+        if tracksScroll {
+            fullContentTop.isActive = false
+            compactContentTop.isActive = true
+        } else {
+            compactContentTop.isActive = false
+            fullContentTop.isActive = true
+        }
+        scrollTracking.setExpandedHeight(tracksScroll ? header.expandedTitleHeight : 0)
+        if !tracksScroll { header.collapse(by: 0) }
     }
 
     internal func updateHeaderAppearance() {
-        header.title = title ?? ""
         if let navigation = customNavigationController {
             header.customHeight = navigation.headerHeight
             header.backgroundColor = navigation.headerBackgroundColor
             header.tintColor = navigation.headerTintColor
         }
+        header.buttonLayout = buttonLayoutOverride ?? customNavigationController?.buttonLayout ?? NavigationButtonLayout()
         topBackdrop.backgroundColor = header.backgroundColor
-        let isRoot = navigationController?.viewControllers.first === self
-        let canDismiss = navigationController?.presentingViewController != nil
-        header.backButton.isHidden = navigationController == nil || (isRoot && !canDismiss)
-        header.backButton.accessibilityLabel = isRoot && canDismiss
-            ? customNavigationController?.closeButtonAccessibilityLabel ?? "Close"
-            : customNavigationController?.backButtonAccessibilityLabel ?? "Back"
-        header.backButton.setImage(UIImage(systemName: isRoot && canDismiss ? "xmark" : "chevron.backward"), for: .normal)
+        reloadNavigationItems()
     }
 
     @objc private func goBack() {

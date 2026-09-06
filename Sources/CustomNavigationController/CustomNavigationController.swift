@@ -5,6 +5,9 @@ open class CustomNavigationController: UINavigationController, UIGestureRecogniz
     public var headerHeight: CGFloat = 66 { didSet { updateHeaders() } }
     public var headerBackgroundColor: UIColor = .systemBackground { didSet { updateHeaders() } }
     public var headerTintColor: UIColor = .label { didSet { updateHeaders() } }
+    public var buttonLayout = NavigationButtonLayout() { didSet { updateHeaders() } }
+    /// Each screen's navigationItem.largeTitleDisplayMode selects the expanded title.
+    public var prefersLargeTitles = false { didSet { updateHeaders() } }
     public var backButtonAccessibilityLabel = "Back" { didSet { updateHeaders() } }
     public var closeButtonAccessibilityLabel = "Close" { didSet { updateHeaders() } }
     public var hidesStatusBar = false { didSet { setNeedsStatusBarAppearanceUpdate() } }

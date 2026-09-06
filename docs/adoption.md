@@ -12,7 +12,7 @@ let navigation = CustomNavigationController(contentViewController: existing)
 
 The content's `navigationController` reaches the containing navigation controller. Use `navigationController as? CustomNavigationController` to call the push helper from that content. A header-capable `CustomNavigationViewController` passed to either helper is reused without another wrapper.
 
-The wrapper is the entry returned by `popViewController`, `topViewController`, and `viewControllers`. Its `contentViewController` identifies the embedded screen. Set the wrapper's `title` for changes after initial loading. Native `navigationItem` buttons, large titles, search controllers, child orientation rules, and sizing/system-gesture preferences are not automatically forwarded. Screens with specialized container behavior should use the subclass path or integrate `NavigationHeaderView` directly.
+The wrapper is the entry returned by `popViewController`, `topViewController`, and `viewControllers`. Its `contentViewController` identifies the embedded screen. Set the wrapper's `title` for changes after initial loading. Buttons and large-title display mode come from the content's `navigationItem`. Search controllers, child orientation rules, and sizing/system-gesture preferences are not automatically forwarded. Screens with specialized container behavior should use the subclass path or integrate `NavigationHeaderView` directly.
 
 A normal `pushViewController`, `show`, or storyboard Show segue does not automatically wrap an arbitrary screen. Use the helper for existing controllers, or make segue destinations subclasses of `CustomNavigationViewController` as the sample does.
 
@@ -61,6 +61,47 @@ present(modal, animated: true)
 ```
 
 Prefer navigation-controller properties for shared height and color settings. They update loaded screens immediately and are applied to newly loaded screens. `header.onTitleTap` is optional; capture the owning screen weakly to avoid a retain cycle. The exposed back button and title control allow app-specific accessibility labels, hints, and identifiers. The library ships no demo identifiers or feedback actions.
+
+## Navigation items and button positions
+
+Use standard items in an existing controller or a package subclass:
+
+```swift
+navigationItem.rightBarButtonItem = UIBarButtonItem(
+    barButtonSystemItem: .done, target: self, action: #selector(doneTapped)
+)
+// Implement @objc func doneTapped() in your screen.
+```
+
+Items are read after loading and on each appearance. If you replace an item or alter navigation-item settings while visible, call `reloadNavigationItems()` on your `CustomNavigationViewController` (the wrapper for an existing screen). Changes such as an existing item's `isEnabled` or title use UIKit's own item rendering. Original target/action, `UIAction`, menu, and custom-view behavior stay with the item.
+
+Back is automatic on pushed screens and Close on a presented root. `hidesBackButton` hides that control. Leading items replace it unless `leftItemsSupplementBackButton` is true. Set the previous screen's `backButtonTitle` or `backBarButtonItem.title` to add text; `.minimal` keeps the chevron alone. The automatic action still pops or dismisses.
+
+```swift
+navigation.buttonLayout = NavigationButtonLayout(
+    leadingInset: 16, trailingInset: 24, verticalOffset: 6
+)
+screen.buttonLayoutOverride = NavigationButtonLayout(trailingInset: 32)
+```
+
+Leading/trailing values are additional directional outer insets, so they follow RTL. The default `verticalOffset` is zero: buttons stay vertically centered in the compact navigation row regardless of `headerHeight`. Large-title expansion sits below that row and does not move its center. Setting an explicit offset moves the complete button row independently of the title. It is clamped within the compact header; use a taller `headerHeight` for more travel. Insets never reduce the row below its minimum width. UIKit still chooses individual item widths, padding, and overflow behavior. Custom views should provide an appropriate intrinsic size and touch target.
+
+## Scrolling large titles
+
+```swift
+navigation.prefersLargeTitles = true
+content.navigationItem.largeTitleDisplayMode = .always
+screen.largeTitleScrollView = content.tableView
+screen.reloadNavigationItems()
+```
+
+The navigation-wide preference enables the feature. `.always` and `.never` select a screen's mode; `.automatic` inherits the previous screen's mode, or the navigation preference at the root. The custom header implements expansion/collapse; it does not reproduce UIKit's private large-title animation or search behavior.
+
+Choose one primary scroll view explicitly. For a subclass, assign `largeTitleScrollView` after creating your scroll view. For a wrapped table or collection controller, assign its `tableView` or `collectionView` to the returned wrapper. Enable `alwaysBounceVertical` if short content should still scroll.
+
+With tracking enabled, `contentLayoutGuide` stays below the **compact** row and the package adds the expanded-title height to the scroll view's existing top content inset. The expanded header overlays that space while scrolling; the visible expansion controls the indicator inset. The scroll delegate is unchanged. Replacing/clearing the selected scroll view or disabling large titles removes the package's inset contribution. Without tracking, the guide stays below the full expanded header.
+
+Use `header.largeTitleControl` to set accessibility labels or identifiers for the expanded title. `onTitleTap` applies to both title presentations, with only the visible presentation exposed as an accessible heading.
 
 ## Maintaining compatibility
 

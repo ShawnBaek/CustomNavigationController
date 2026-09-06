@@ -133,4 +133,125 @@ final class NavigationUITests: XCTestCase {
         back.tap()
         waitForTitle("Main", in: app)
     }
+
+    @MainActor private func launchFeatures(_ arguments: [String] = []) -> XCUIApplication {
+        continueAfterFailure = false
+        XCUIDevice.shared.orientation = .portrait
+        let app = XCUIApplication()
+        app.launchArguments = ["--navigation-features"] + arguments
+        app.launch()
+        let large = app.descendants(matching: .any).matching(identifier: "largeHeaderTitle").firstMatch
+        XCTAssertTrue(large.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["featureDone"].isHittable)
+        return app
+    }
+
+    @MainActor private func reveal(_ element: XCUIElement, in scroll: XCUIElement) {
+        for _ in 0..<6 where !element.isHittable { scroll.swipeUp() }
+        XCTAssertTrue(element.isHittable)
+    }
+
+    @MainActor func testNativeItemsActionsMenusAndPositioning() {
+        let app = launchFeatures()
+        let done = app.buttons["featureDone"]
+        let back = app.buttons["headerBack"]
+        let scroll = app.scrollViews["featureContent"]
+        let originalDone = done.frame
+        let originalBack = back.frame
+        done.tap()
+        XCTAssertEqual(app.staticTexts["featureFeedback"].label, "Done tapped.")
+        app.buttons["featureMore"].tap()
+        app.buttons["Mark favorite"].tap()
+        XCTAssertEqual(app.staticTexts["featureFeedback"].label, "Favorite selected.")
+        // Glass buttons can have smaller visual bounds than their native touch target.
+        // Older bars already expose a full-height frame; test within that 44-point area.
+        let upperTargetEdge = originalDone.midY - 21 // One point inside a centered 44-point target.
+        done.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0))
+            .withOffset(CGVector(dx: 0, dy: upperTargetEdge - originalDone.minY)).tap()
+        XCTAssertEqual(app.staticTexts["featureFeedback"].label, "Done tapped.")
+        app.segmentedControls["leadingSpacing"].buttons["16"].tap()
+        app.segmentedControls["trailingSpacing"].buttons["16"].tap()
+        app.segmentedControls["verticalPosition"].buttons["+8"].tap()
+        XCTAssertEqual(back.frame.minX - originalBack.minX, 16, accuracy: 1)
+        XCTAssertEqual(done.frame.maxX - originalDone.maxX, -16, accuracy: 1)
+        XCTAssertEqual(done.frame.midY - originalDone.midY, 8, accuracy: 1)
+        screenshot("items-positioned-large-title")
+
+        let toggle = app.buttons["toggleDone"]
+        reveal(toggle, in: scroll)
+        toggle.tap()
+        XCTAssertFalse(done.isEnabled)
+        toggle.tap()
+        XCTAssertTrue(done.isEnabled)
+        app.buttons["replaceDone"].tap()
+        XCTAssertEqual(done.label, "Save")
+        done.tap()
+        XCTAssertEqual(app.staticTexts["featureFeedback"].label, "Saved.")
+        let modal = app.buttons["featureModal"]
+        reveal(modal, in: scroll)
+        modal.tap()
+        XCTAssertTrue(app.buttons["modalDone"].waitForExistence(timeout: 5))
+        screenshot("native-done-modal")
+        app.buttons["modalDone"].tap()
+        XCTAssertTrue(done.waitForExistence(timeout: 5))
+        XCTAssertEqual(done.label, "Save")
+        back.tap()
+        waitForTitle("Main", in: app)
+        app.buttons["rootInfo"].tap()
+        XCTAssertEqual(app.staticTexts["titleFeedback"].label, "Native navigation item tapped.")
+    }
+
+    @MainActor func testLargeTitleCollapseRotationAndCancelledPop() {
+        let app = launchFeatures()
+        let scroll = app.scrollViews["featureContent"]
+        let header = app.otherElements["navigationHeader"]
+        let expandedHeight = header.frame.height
+        XCTAssertGreaterThan(expandedHeight, 66)
+        screenshot("large-title-expanded")
+        scroll.swipeUp()
+        let compact = NSPredicate { _, _ in abs(header.frame.height - 66) < 1 }
+        XCTAssertEqual(XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: compact, object: header)], timeout: 5), .completed)
+        XCTAssertTrue(app.buttons["featureDone"].isHittable)
+        screenshot("large-title-collapsed")
+        edgeDrag(in: app, to: 0.18)
+        XCTAssertTrue(app.buttons["featureDone"].isHittable)
+        XCTAssertEqual(header.frame.height, 66, accuracy: 1)
+        let push = app.buttons["featurePush"]
+        reveal(push, in: scroll)
+        push.tap()
+        let detailTitle = app.descendants(matching: .any).matching(identifier: "headerTitle").firstMatch
+        let isDetail = NSPredicate(format: "label == 'Detail' AND hittable == true")
+        XCTAssertEqual(XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: isDetail, object: detailTitle)], timeout: 5), .completed)
+        app.buttons["headerBack"].tap()
+        XCTAssertTrue(app.buttons["featureDone"].waitForExistence(timeout: 5))
+        XCTAssertEqual(header.frame.height, 66, accuracy: 1)
+        XCUIDevice.shared.orientation = .landscapeLeft
+        let landscape = NSPredicate { _, _ in app.windows.firstMatch.frame.width > app.windows.firstMatch.frame.height }
+        XCTAssertEqual(XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: landscape, object: app)], timeout: 5), .completed)
+        XCTAssertTrue(app.buttons["featureDone"].isHittable)
+        screenshot("native-items-landscape")
+        XCUIDevice.shared.orientation = .portrait
+        let portrait = NSPredicate { _, _ in
+            let frame = app.windows.firstMatch.frame
+            return frame.width < frame.height && abs(header.frame.width - frame.width) < 1
+        }
+        XCTAssertEqual(XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: portrait, object: app)], timeout: 5), .completed)
+        for _ in 0..<5 where header.frame.height < expandedHeight - 1 { scroll.swipeDown() }
+        XCTAssertEqual(header.frame.height, expandedHeight, accuracy: 1)
+        XCTAssertTrue(app.buttons["featureDone"].isHittable)
+    }
+
+    @MainActor func testLargeTitleAccessibilityAndDirectionalItems() {
+        let app = launchFeatures(["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL", "-AppleLanguages", "(ar)", "-AppleLocale", "ar", "-NSForceRightToLeftWritingDirection", "YES"])
+        let back = app.buttons["headerBack"]
+        let done = app.buttons["featureDone"]
+        screenshot("large-title-accessibility-rtl")
+        XCTAssertGreaterThan(back.frame.midX, done.frame.midX)
+        XCTAssertGreaterThanOrEqual(back.frame.height, 44)
+        XCTAssertTrue(done.isHittable)
+        let large = app.descendants(matching: .any).matching(identifier: "largeHeaderTitle").firstMatch
+        XCTAssertEqual(large.label, "Navigation controls")
+        app.scrollViews["featureContent"].swipeUp()
+        XCTAssertTrue(done.isHittable)
+    }
 }
