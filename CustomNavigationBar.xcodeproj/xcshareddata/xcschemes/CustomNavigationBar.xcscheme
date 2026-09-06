@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scheme LastUpgradeVersion="1640" version="1.3">
+  <BuildAction parallelizeBuildables="YES" buildImplicitDependencies="YES">
+    <BuildActionEntries>
+      <BuildActionEntry buildForTesting="YES" buildForRunning="YES" buildForProfiling="YES" buildForArchiving="YES" buildForAnalyzing="YES"><BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="7FA7CB861F82450B00C80C82" BuildableName="CustomNavigationBar.app" BlueprintName="CustomNavigationBar" ReferencedContainer="container:CustomNavigationBar.xcodeproj"/></BuildActionEntry>
+    </BuildActionEntries>
+  </BuildAction>
+  <TestAction buildConfiguration="Debug" selectedDebuggerIdentifier="Xcode.DebuggerFoundation.Debugger.LLDB" selectedLauncherIdentifier="Xcode.IDEFoundation.Launcher.LLDB" shouldUseLaunchSchemeArgsEnv="YES">
+    <Testables>
+      <TestableReference skipped="NO" parallelizable="NO"><BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="C0000000000000000000001F" BuildableName="CustomNavigationBarTests.xctest" BlueprintName="CustomNavigationBarTests" ReferencedContainer="container:CustomNavigationBar.xcodeproj"/></TestableReference>
+      <TestableReference skipped="NO" parallelizable="NO"><BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="C00000000000000000000020" BuildableName="CustomNavigationBarUITests.xctest" BlueprintName="CustomNavigationBarUITests" ReferencedContainer="container:CustomNavigationBar.xcodeproj"/></TestableReference>
+    </Testables>
+  </TestAction>
+  <LaunchAction buildConfiguration="Debug" selectedDebuggerIdentifier="Xcode.DebuggerFoundation.Debugger.LLDB" selectedLauncherIdentifier="Xcode.IDEFoundation.Launcher.LLDB" launchStyle="0" useCustomWorkingDirectory="NO" ignoresPersistentStateOnLaunch="NO" debugDocumentVersioning="YES" debugServiceExtension="internal" allowLocationSimulation="YES">
+    <BuildableProductRunnable runnableDebuggingMode="0"><BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="7FA7CB861F82450B00C80C82" BuildableName="CustomNavigationBar.app" BlueprintName="CustomNavigationBar" ReferencedContainer="container:CustomNavigationBar.xcodeproj"/></BuildableProductRunnable>
+  </LaunchAction>
+  <ProfileAction buildConfiguration="Release" shouldUseLaunchSchemeArgsEnv="YES" savedToolIdentifier="" useCustomWorkingDirectory="NO" debugDocumentVersioning="YES">
+    <BuildableProductRunnable runnableDebuggingMode="0"><BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="7FA7CB861F82450B00C80C82" BuildableName="CustomNavigationBar.app" BlueprintName="CustomNavigationBar" ReferencedContainer="container:CustomNavigationBar.xcodeproj"/></BuildableProductRunnable>
+  </ProfileAction>
+  <AnalyzeAction buildConfiguration="Debug"/>
+  <ArchiveAction buildConfiguration="Release" revealArchiveInOrganizer="YES"/>
+</Scheme>

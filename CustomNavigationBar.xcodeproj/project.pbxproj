@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 48;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,9 +12,13 @@
 		7FA7CB901F82450B00C80C82 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7FA7CB8E1F82450B00C80C82 /* Main.storyboard */; };
 		7FA7CB921F82450B00C80C82 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7FA7CB911F82450B00C80C82 /* Assets.xcassets */; };
 		7FA7CB951F82450B00C80C82 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7FA7CB931F82450B00C80C82 /* LaunchScreen.storyboard */; };
-		7FA7CB9F1F866A1200C80C82 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FA7CB9E1F866A1200C80C82 /* NavigationBar.swift */; };
 		7FA7CBA11F86936100C80C82 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FA7CBA01F86936100C80C82 /* SecondViewController.swift */; };
-		7FA7CBA51F878E2600C80C82 /* NSAttributedString+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FA7CBA41F878E2600C80C82 /* NSAttributedString+Extension.swift */; };
+		C0000000000000000000000C /* HeaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000000000000000000002 /* HeaderViewController.swift */; };
+		C0000000000000000000000D /* HeaderLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000000000000000000003 /* HeaderLayoutTests.swift */; };
+		C0000000000000000000000E /* NavigationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000000000000000000004 /* NavigationUITests.swift */; };
+        D00000000000000000000003 /* CustomNavigationController in Frameworks */ = {isa = PBXBuildFile; productRef = D00000000000000000000002; };
+        D00000000000000000000005 /* CustomNavigationController in Frameworks */ = {isa = PBXBuildFile; productRef = D00000000000000000000004; };
+        D00000000000000000000007 /* PublicAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00000000000000000000006; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,9 +29,13 @@
 		7FA7CB911F82450B00C80C82 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7FA7CB941F82450B00C80C82 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7FA7CB961F82450B00C80C82 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7FA7CB9E1F866A1200C80C82 /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
 		7FA7CBA01F86936100C80C82 /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
-		7FA7CBA41F878E2600C80C82 /* NSAttributedString+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+Extension.swift"; sourceTree = "<group>"; };
+		C00000000000000000000002 /* HeaderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderViewController.swift; sourceTree = "<group>"; };
+		C00000000000000000000003 /* HeaderLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderLayoutTests.swift; sourceTree = "<group>"; };
+		C00000000000000000000004 /* NavigationUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationUITests.swift; sourceTree = "<group>"; };
+		C00000000000000000000029 /* CustomNavigationBarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CustomNavigationBarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0000000000000000000002A /* CustomNavigationBarUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CustomNavigationBarUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+        D00000000000000000000006 /* PublicAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PublicAPITests.swift; path = Tests/CustomNavigationControllerTests/PublicAPITests.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,9 +43,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+                D00000000000000000000003 /* CustomNavigationController in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C0000000000000000000003D = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (D00000000000000000000005,); runOnlyForDeploymentPostprocessing = 0; };
+		C0000000000000000000003E = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -45,6 +56,8 @@
 			isa = PBXGroup;
 			children = (
 				7FA7CB891F82450B00C80C82 /* CustomNavigationBar */,
+				C00000000000000000000015 /* CustomNavigationBarTests */,
+				C00000000000000000000016 /* CustomNavigationBarUITests */,
 				7FA7CB881F82450B00C80C82 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -53,6 +66,8 @@
 			isa = PBXGroup;
 			children = (
 				7FA7CB871F82450B00C80C82 /* CustomNavigationBar.app */,
+				C0000000000000000000002A /* CustomNavigationBarUITests.xctest */,
+				C00000000000000000000029 /* CustomNavigationBarTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -66,13 +81,14 @@
 				7FA7CB911F82450B00C80C82 /* Assets.xcassets */,
 				7FA7CB931F82450B00C80C82 /* LaunchScreen.storyboard */,
 				7FA7CB961F82450B00C80C82 /* Info.plist */,
-				7FA7CB9E1F866A1200C80C82 /* NavigationBar.swift */,
 				7FA7CBA01F86936100C80C82 /* SecondViewController.swift */,
-				7FA7CBA41F878E2600C80C82 /* NSAttributedString+Extension.swift */,
+				C00000000000000000000002 /* HeaderViewController.swift */,
 			);
 			path = CustomNavigationBar;
 			sourceTree = "<group>";
 		};
+		C00000000000000000000015 /* CustomNavigationBarTests */ = {isa = PBXGroup; children = (C00000000000000000000003, D00000000000000000000006,); path = CustomNavigationBarTests; sourceTree = "<group>"; };
+		C00000000000000000000016 /* CustomNavigationBarUITests */ = {isa = PBXGroup; children = (C00000000000000000000004,); path = CustomNavigationBarUITests; sourceTree = "<group>"; };
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -89,12 +105,40 @@
 			dependencies = (
 			);
 			name = CustomNavigationBar;
+            packageProductDependencies = (D00000000000000000000002,);
 			productName = "UINavigationBar Programmatically";
 			productReference = 7FA7CB871F82450B00C80C82 /* CustomNavigationBar.app */;
 			productType = "com.apple.product-type.application";
 		};
+    C0000000000000000000001F /* CustomNavigationBarTests */ = {
+        isa = PBXNativeTarget;
+        buildConfigurationList = C00000000000000000000051;
+        buildPhases = (C00000000000000000000033, C0000000000000000000003D, C00000000000000000000047,);
+        buildRules = ();
+        dependencies = (C00000000000000000000065,);
+        name = CustomNavigationBarTests;
+        packageProductDependencies = (D00000000000000000000004,);
+        productName = CustomNavigationBarTests;
+        productReference = C00000000000000000000029;
+        productType = "com.apple.product-type.bundle.unit-test";
+    };
+    C00000000000000000000020 /* CustomNavigationBarUITests */ = {
+        isa = PBXNativeTarget;
+        buildConfigurationList = C00000000000000000000052;
+        buildPhases = (C00000000000000000000034, C0000000000000000000003E, C00000000000000000000048,);
+        buildRules = ();
+        dependencies = (C00000000000000000000066,);
+        name = CustomNavigationBarUITests;
+        productName = CustomNavigationBarUITests;
+        productReference = C0000000000000000000002A;
+        productType = "com.apple.product-type.bundle.ui-testing";
+    };
 /* End PBXNativeTarget section */
 
+    C0000000000000000000006F = {isa = PBXContainerItemProxy; containerPortal = 7FA7CB7F1F82450B00C80C82; proxyType = 1; remoteGlobalIDString = 7FA7CB861F82450B00C80C82; remoteInfo = CustomNavigationBar; };
+    C00000000000000000000065 = {isa = PBXTargetDependency; target = 7FA7CB861F82450B00C80C82; targetProxy = C0000000000000000000006F; };
+    C00000000000000000000070 = {isa = PBXContainerItemProxy; containerPortal = 7FA7CB7F1F82450B00C80C82; proxyType = 1; remoteGlobalIDString = 7FA7CB861F82450B00C80C82; remoteInfo = CustomNavigationBar; };
+    C00000000000000000000066 = {isa = PBXTargetDependency; target = 7FA7CB861F82450B00C80C82; targetProxy = C00000000000000000000070; };
 /* Begin PBXProject section */
 		7FA7CB7F1F82450B00C80C82 /* Project object */ = {
 			isa = PBXProject;
@@ -110,7 +154,7 @@
 				};
 			};
 			buildConfigurationList = 7FA7CB821F82450B00C80C82 /* Build configuration list for PBXProject "CustomNavigationBar" */;
-			compatibilityVersion = "Xcode 8.0";
+			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -119,10 +163,13 @@
 			);
 			mainGroup = 7FA7CB7E1F82450B00C80C82;
 			productRefGroup = 7FA7CB881F82450B00C80C82 /* Products */;
+			packageReferences = (D00000000000000000000001,);
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				7FA7CB861F82450B00C80C82 /* CustomNavigationBar */,
+				C00000000000000000000020 /* CustomNavigationBarUITests */,
+				C0000000000000000000001F /* CustomNavigationBarTests */,
 			);
 		};
 /* End PBXProject section */
@@ -138,6 +185,8 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C00000000000000000000047 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		C00000000000000000000048 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -147,12 +196,13 @@
 			files = (
 				7FA7CB8D1F82450B00C80C82 /* ViewController.swift in Sources */,
 				7FA7CB8B1F82450B00C80C82 /* AppDelegate.swift in Sources */,
-				7FA7CBA51F878E2600C80C82 /* NSAttributedString+Extension.swift in Sources */,
+				C0000000000000000000000C /* HeaderViewController.swift in Sources */,
 				7FA7CBA11F86936100C80C82 /* SecondViewController.swift in Sources */,
-				7FA7CB9F1F866A1200C80C82 /* NavigationBar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C00000000000000000000033 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (C0000000000000000000000D, D00000000000000000000007,); runOnlyForDeploymentPostprocessing = 0; };
+		C00000000000000000000034 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (C0000000000000000000000E,); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
@@ -173,6 +223,15 @@
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
+
+/* Begin XCLocalSwiftPackageReference section */
+        D00000000000000000000001 /* Local package */ = {isa = XCLocalSwiftPackageReference; relativePath = .; };
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+        D00000000000000000000002 /* CustomNavigationController */ = {isa = XCSwiftPackageProductDependency; package = D00000000000000000000001; productName = CustomNavigationController; };
+        D00000000000000000000004 /* CustomNavigationController */ = {isa = XCSwiftPackageProductDependency; package = D00000000000000000000001; productName = CustomNavigationController; };
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCBuildConfiguration section */
 		7FA7CB971F82450B00C80C82 /* Debug */ = {
@@ -223,7 +282,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -274,10 +333,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -289,11 +349,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8V5JV6976E;
 				INFOPLIST_FILE = CustomNavigationBar/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.shawnbaek.customNavigationBar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -305,15 +365,73 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8V5JV6976E;
 				INFOPLIST_FILE = CustomNavigationBar/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.shawnbaek.customNavigationBar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
+    C0000000000000000000005B /* Debug */ = {
+        isa = XCBuildConfiguration;
+        buildSettings = {
+            GENERATE_INFOPLIST_FILE = YES;
+            IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+            LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+            PRODUCT_BUNDLE_IDENTIFIER = "com.shawnbaek.customNavigationBar.tests";
+            PRODUCT_NAME = "$(TARGET_NAME)";
+            SWIFT_VERSION = 5.0;
+            TARGETED_DEVICE_FAMILY = "1,2";
+            BUNDLE_LOADER = "$(TEST_HOST)";
+                    TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CustomNavigationBar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CustomNavigationBar";
+        };
+        name = Debug;
+    };
+    C0000000000000000000005C /* Release */ = {
+        isa = XCBuildConfiguration;
+        buildSettings = {
+            GENERATE_INFOPLIST_FILE = YES;
+            IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+            LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+            PRODUCT_BUNDLE_IDENTIFIER = "com.shawnbaek.customNavigationBar.tests";
+            PRODUCT_NAME = "$(TARGET_NAME)";
+            SWIFT_VERSION = 5.0;
+            TARGETED_DEVICE_FAMILY = "1,2";
+            BUNDLE_LOADER = "$(TEST_HOST)";
+                    TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CustomNavigationBar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CustomNavigationBar";
+        };
+        name = Release;
+    };
+    C0000000000000000000005D /* Debug */ = {
+        isa = XCBuildConfiguration;
+        buildSettings = {
+            GENERATE_INFOPLIST_FILE = YES;
+            IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+            LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+            PRODUCT_BUNDLE_IDENTIFIER = "com.shawnbaek.customNavigationBar.uitests";
+            PRODUCT_NAME = "$(TARGET_NAME)";
+            SWIFT_VERSION = 5.0;
+            TARGETED_DEVICE_FAMILY = "1,2";
+            TEST_TARGET_NAME = CustomNavigationBar;
+        };
+        name = Debug;
+    };
+    C0000000000000000000005E /* Release */ = {
+        isa = XCBuildConfiguration;
+        buildSettings = {
+            GENERATE_INFOPLIST_FILE = YES;
+            IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+            LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+            PRODUCT_BUNDLE_IDENTIFIER = "com.shawnbaek.customNavigationBar.uitests";
+            PRODUCT_NAME = "$(TARGET_NAME)";
+            SWIFT_VERSION = 5.0;
+            TARGETED_DEVICE_FAMILY = "1,2";
+            TEST_TARGET_NAME = CustomNavigationBar;
+        };
+        name = Release;
+    };
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -335,6 +453,8 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		C00000000000000000000051 = {isa = XCConfigurationList; buildConfigurations = (C0000000000000000000005B, C0000000000000000000005C,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		C00000000000000000000052 = {isa = XCConfigurationList; buildConfigurations = (C0000000000000000000005D, C0000000000000000000005E,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
 /* End XCConfigurationList section */
 	};
 	rootObject = 7FA7CB7F1F82450B00C80C82 /* Project object */;
