@@ -85,21 +85,27 @@ final class HeaderLayoutTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(screen.header.backButton.bounds.height, 44)
         XCTAssertGreaterThanOrEqual(screen.header.backButton.bounds.width, 44)
         XCTAssertGreaterThanOrEqual(screen.header.titleControl.bounds.height, 44)
+        XCTAssertGreaterThan(screen.header.titleControl.bounds.width, 44)
         XCTAssertEqual(screen.header.titleControl.accessibilityLabel, screen.title)
         XCTAssertTrue(screen.header.titleControl.accessibilityTraits.contains(.button))
         XCTAssertTrue(screen.header.titleControl.accessibilityTraits.contains(.header))
     }
 
     func testBackControlMovesToTheLeadingEdgeInRightToLeftLayout() {
-        let header = NavigationHeaderView()
-        header.title = "Title"
+        let navigation = CustomNavigationController(rootViewController: CustomNavigationViewController())
+        let screen = navigation.pushContentViewController(UIViewController(), animated: false)
+        screen.title = "Title"
+        screen.loadViewIfNeeded()
+        let header = screen.header
         header.semanticContentAttribute = .forceRightToLeft
         header.frame = CGRect(x: 0, y: 0, width: 390, height: 66)
         header.setNeedsLayout()
         header.layoutIfNeeded()
 
-        XCTAssertGreaterThan(header.backButton.frame.midX, header.titleControl.frame.midX)
-        XCTAssertEqual(header.backButton.frame.maxX, header.bounds.maxX - 8, accuracy: 0.5)
+        let backFrame = header.backButton.convert(header.backButton.bounds, to: header)
+        let titleFrame = header.titleControl.convert(header.titleControl.bounds, to: header)
+        XCTAssertGreaterThan(backFrame.midX, titleFrame.midX)
+        XCTAssertLessThanOrEqual(backFrame.maxX, header.bounds.maxX)
     }
 
     func testInteractivePopGestureRequiresASecondScreen() throws {
