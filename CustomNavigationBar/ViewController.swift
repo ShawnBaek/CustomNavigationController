@@ -1,62 +1,41 @@
-//
-//  ViewController.swift
-//  UINavigationBar Programmatically
-//
-//  Created by ShawnBaek on 2017. 10. 6..
-//  Copyright © 2017 ShawnBaek. All rights reserved.
-//
-
 import UIKit
+import CustomNavigationController
 
-class ViewController: UIViewController {
-    
-    var navbar : UINavigationBar!
-    
-    @IBOutlet weak var testView: UIView!
-    
+final class ViewController: HeaderViewController {
+    private weak var statusButton: UIButton?
+
     override func viewDidLoad() {
+        customNavigationController?.headerBackgroundColor = .systemYellow
+        customNavigationController?.headerTintColor = .black
+        customNavigationController?.statusBarStyle = .darkContent
+        customNavigationController?.hidesStatusBar = true
         super.viewDidLoad()
-
-        //update NavigationBar's frame
-        self.navigationController?.navigationBar.sizeToFit()
-        print("NavigationBar Frame : \(String(describing: self.navigationController!.navigationBar.frame))")
-
-    }
-    
-    //Hide Statusbar
-    override var prefersStatusBarHidden: Bool {
-        
-        return true
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        
-        super.viewDidAppear(false)
-        
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-      
-        //Important!
-        
-        //Default NavigationBar Height is 44. Custom NavigationBar Height is 66. So We should set additionalSafeAreaInsets to 66-44 = 22
-        if appDelegate.isIphoneX! {
-            
-            self.additionalSafeAreaInsets.top = -22
-        
-        }else {
-            
-            self.additionalSafeAreaInsets.top = UIApplication.shared.statusBarFrame.size.height
+        title = "Main"
+        addText("Your height. Your header.", style: .title1)
+        addText("Try a taller navigation header, move between screens, and return from a modal. The yellow area stays with its screen.")
+        addText("Header height", style: .headline)
+        let heightPicker = UISegmentedControl(items: ["44 pt", "66 pt", "88 pt"])
+        heightPicker.selectedSegmentIndex = 1
+        heightPicker.accessibilityIdentifier = "heightPicker"
+        heightPicker.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
+        heightPicker.addAction(UIAction { [weak self, weak heightPicker] _ in
+            guard let heightPicker else { return }
+            self?.customNavigationController?.headerHeight = [44, 66, 88][heightPicker.selectedSegmentIndex]
+        }, for: .valueChanged)
+        contentStack.addArrangedSubview(heightPicker)
+        statusButton = addButton("Show status bar", identifier: "toggleStatusBar") { [weak self] in
+            guard let navigation = self?.customNavigationController else { return }
+            navigation.hidesStatusBar.toggle()
+            self?.statusButton?.configuration?.title = navigation.hidesStatusBar ? "Show status bar" : "Hide status bar"
+            self?.feedbackLabel.text = navigation.hidesStatusBar ? "Status bar hidden." : "Status bar visible."
         }
-        
-        
-        
-        
+        addButton("Push view controller", identifier: "pushDetail") { [weak self] in
+            guard self?.navigationController?.transitionCoordinator == nil else { return }
+            self?.performSegue(withIdentifier: "showDetail", sender: nil)
+        }
+        addButton("Present sheet", identifier: "presentSheet") { [weak self] in self?.presentSample(style: .pageSheet) }
+        addButton("Present full screen", identifier: "presentFullScreen") { [weak self] in self?.presentSample(style: .fullScreen) }
+        contentStack.addArrangedSubview(feedbackLabel)
+        addText("The selected height excludes the device safe area. Larger accessibility text can expand the header to stay readable.", style: .footnote)
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
-
 }
-

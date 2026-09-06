@@ -1,0 +1,81 @@
+name: iOS library and sample
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: ${{ matrix.label }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: iphone-ios18
+            runner: macos-15
+            xcode: '16.4'
+            device: iPhone 16
+            os: '18.5'
+          - label: iphone-ios26
+            runner: macos-26
+            xcode: '26.6'
+            device: iPhone 17
+            os: '26.5'
+          - label: ipad-ios26
+            runner: macos-26
+            xcode: '26.6'
+            device: iPad Pro 11-inch (M5)
+            os: '26.5'
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
+      TEST_DESTINATION: platform=iOS Simulator,name=${{ matrix.device }},OS=${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Record toolchain
+        run: xcodebuild -version
+      - name: Resolve local package graph
+        run: |
+          xcodebuild -resolvePackageDependencies \
+            -project CustomNavigationBar.xcodeproj \
+            -scheme CustomNavigationBar \
+            -derivedDataPath build/DerivedData
+      - name: Test package API and sample
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project CustomNavigationBar.xcodeproj \
+            -scheme CustomNavigationBar \
+            -disableAutomaticPackageResolution \
+            -destination "$TEST_DESTINATION" \
+            -parallel-testing-enabled NO \
+            -maximum-concurrent-test-simulator-destinations 1 \
+            -derivedDataPath build/DerivedData \
+            -resultBundlePath build/Tests.xcresult \
+            CODE_SIGNING_ALLOWED=NO | tee build-test.log
+      - name: Verify package metadata stayed unchanged
+        if: always()
+        run: |
+          git diff --exit-code -- Package.swift CustomNavigationBar.xcodeproj/project.pbxproj
+          test -z "$(git ls-files --others --exclude-standard -- '*Package.resolved')"
+      - name: Preserve test results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ${{ matrix.label }}-test-results
+          path: |
+            build/Tests.xcresult
+            build-test.log
+          retention-days: 14
