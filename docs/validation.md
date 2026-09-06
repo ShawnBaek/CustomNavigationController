@@ -16,7 +16,7 @@ Verified on 6 September 2026 with Xcode 27 beta (`27A5228h`):
 | Public API and integration source review | No remaining findings |
 | Manifest, project/plist, storyboard/scheme, and diff checks | Passed |
 
-Verification on each runtime combines a passing 27-test full suite with a new default-centering regression and three focused push/back UI reruns. The current suite contains 14 public API tests, 6 hosted layout/storyboard tests, and 8 UI tests. The centering regression checks Back and Done at compact heights of 44, 66, 88, 120, and 200 points, with large titles both enabled and disabled. The UI reruns exercise button-driven push/Back, repeated pushes after completed/cancelled edge swipes, and restoring a collapsed large title after returning from Detail.
+Verification on each runtime combines a passing 27-test full suite with a new default-centering regression and three focused push/back UI reruns. Those runs covered 14 public API tests, 6 hosted layout/storyboard tests, and 8 UI tests. The centering regression checks Back and Done at compact heights of 44, 66, 88, 120, and 200 points, with large titles both enabled and disabled. The UI reruns exercise button-driven push/Back, repeated pushes after completed/cancelled edge swipes, and restoring a collapsed large title after returning from Detail.
 
 Other coverage includes native Done and menu actions, item replacement and enablement, directional/vertical button movement, Back policy, large-title modes, scroll collapse, reversible insets, and replacement of a released scroll view. Existing coverage retains large text/RTL, height/status-bar changes, rotation, sheet/full-screen dismissal, and title actions.
 
@@ -29,6 +29,14 @@ The iOS 18.5 suite ran in light appearance. Its native Done item uses text. Touc
 The [iPad scroll recording](images/ipados27-large-title-scroll.mp4) shows expansion collapsing into the compact row while the controls remain available. It is a continuous 2.8-second excerpt from the passing iPad UI test, trimmed without re-encoding or changing playback speed. The iPad run used the generated test-run specification with `SystemAttachmentLifetime=keepAlways` so its successful recording was retained.
 
 The [push and Back recording](images/ios27-push-back.mp4) is a continuous 4.5-second excerpt from a passing iPhone UI test. It shows a push to Second, a title action, and Back returning to Main. Separate UI assertions cover repeated pushes, completed/cancelled edge swipes, and returning from Detail to the collapsed large-title screen.
+
+### 88-point push and Back
+
+On 7 September 2026, `testCapture88PointNavigationExample` passed on iPhone 17 / iOS 27.0 beta with Xcode 27 beta (`27A5228h`): 1 test, 0 failures or skips. This additional case brings the suite to 29 tests; its local result applies to this runtime only, separately from the 28-case results above.
+
+The [88-point recording](images/ios27-88pt-push-back.mp4) shows selecting 88 points, tapping Done, collapsing the large title, pushing Detail, and using Back twice to return to Main. Assertions check the 88-point compact height, centered Back and Done buttons before and after collapse, the Done action, and preserved scroll position and selected height after returning. The expanded large title occupies additional space below the 88-point button row.
+
+The native dark-appearance recording is a continuous 15.4-second excerpt (6.8–22.2 seconds of the original), trimmed without re-encoding or changing playback speed. The exact test source used for this successful capture is included in the shared UI test target.
 
 The package/project metadata remained unchanged during builds and tests with automatic resolution disabled. Xcode 27's XCTest libraries declare an iOS 17 minimum, producing linker warnings for the test targets' iOS 15 setting; both tested runtimes are newer than that floor. App and package deployment targets remain iOS 15. No signing configuration was changed.
 
