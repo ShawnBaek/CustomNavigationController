@@ -254,4 +254,63 @@ final class NavigationUITests: XCTestCase {
         app.scrollViews["featureContent"].swipeUp()
         XCTAssertTrue(done.isHittable)
     }
+
+    @MainActor func testCapture88PointNavigationExample() {
+        let app = launch()
+        let header = app.otherElements["navigationHeader"]
+        let height88 = app.segmentedControls["heightPicker"].buttons["88 pt"]
+        height88.tap()
+        XCTAssertEqual(header.frame.height, 88, accuracy: 1)
+        XCTAssertTrue(height88.isSelected)
+        screenshot("88pt-main")
+
+        let openFeatures = app.buttons["showNavigationFeatures"]
+        reveal(openFeatures, in: app.scrollViews["sampleContent"])
+        openFeatures.tap()
+        let done = app.buttons["featureDone"]
+        XCTAssertTrue(done.waitForExistence(timeout: 5))
+        XCTAssertTrue(done.isHittable)
+        XCTAssertGreaterThan(header.frame.height, 88)
+        let compactCenterY = header.frame.minY + 44
+        XCTAssertEqual(app.buttons["headerBack"].frame.midY, compactCenterY, accuracy: 1)
+        XCTAssertEqual(done.frame.midY, compactCenterY, accuracy: 1)
+        screenshot("88pt-large-title-centered-buttons")
+        done.tap()
+        XCTAssertEqual(app.staticTexts["featureFeedback"].label, "Done tapped.")
+
+        let scroll = app.scrollViews["featureContent"]
+        scroll.swipeUp()
+        let compact = NSPredicate { _, _ in abs(header.frame.height - 88) < 1 }
+        XCTAssertEqual(XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: compact, object: header)], timeout: 5), .completed)
+        XCTAssertEqual(app.buttons["headerBack"].frame.midY, header.frame.midY, accuracy: 1)
+        XCTAssertEqual(done.frame.midY, header.frame.midY, accuracy: 1)
+        screenshot("88pt-collapsed-centered-buttons")
+
+        let push = app.buttons["featurePush"]
+        reveal(push, in: scroll)
+        let pushPosition = push.frame.minY
+        push.tap()
+        let detailTitle = app.descendants(matching: .any).matching(identifier: "headerTitle").firstMatch
+        let isDetail = NSPredicate(format: "label == 'Detail' AND hittable == true")
+        XCTAssertEqual(XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: isDetail, object: detailTitle)], timeout: 5), .completed)
+        XCTAssertEqual(app.buttons["headerBack"].frame.midY, compactCenterY, accuracy: 1)
+        screenshot("88pt-pushed-detail")
+        app.buttons["headerBack"].tap()
+        XCTAssertTrue(done.waitForExistence(timeout: 5))
+        XCTAssertTrue(done.isHittable)
+        XCTAssertEqual(header.frame.height, 88, accuracy: 1)
+        XCTAssertEqual(done.frame.midY, header.frame.midY, accuracy: 1)
+        XCTAssertEqual(push.frame.minY, pushPosition, accuracy: 1)
+        screenshot("88pt-back-preserves-collapse-and-scroll")
+
+        app.buttons["headerBack"].tap()
+        waitForTitle("Main", in: app)
+        XCTAssertEqual(header.frame.height, 88, accuracy: 1)
+        let mainScroll = app.scrollViews["sampleContent"]
+        for _ in 0..<4 where !height88.isHittable { mainScroll.swipeDown() }
+        XCTAssertTrue(height88.isHittable)
+        XCTAssertTrue(height88.isSelected)
+        screenshot("88pt-returned-main")
+    }
+
 }

@@ -115,4 +115,6 @@ For button examples, storyboard / `IBOutlet` adoption, and container boundaries,
 
 Open `CustomNavigationBar.xcodeproj`, select `CustomNavigationBar`, and run on an iPhone or iPad Simulator. Try the original height and transition controls, then open **Navigation buttons & large titles** for Done/More actions, spacing controls, item replacement, and scroll collapse.
 
+Watch the [88-point example with Done, large titles, push, and Back](docs/images/ios27-88pt-push-back.mp4). The 15.4-second recording shows selecting 88 points, collapsing the large title, pushing Detail, and returning through both Back buttons with the height and scroll position preserved.
+
 [Architecture](docs/architecture.md) · [Tests and verification status](docs/validation.md) · [MIT license](LICENSE)
