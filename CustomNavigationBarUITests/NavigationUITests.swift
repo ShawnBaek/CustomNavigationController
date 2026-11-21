@@ -16,7 +16,8 @@ final class NavigationUITests: XCTestCase {
         let button = app.buttons.matching(identifier: "headerTitle")
             .matching(NSPredicate(format: "label == %@", title)).firstMatch
         let predicate = NSPredicate(format: "exists == true AND hittable == true")
-        XCTAssertEqual(XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: predicate, object: button)], timeout: 5), .completed, app.debugDescription)
+        // Hosted Simulator accessibility queries can consume most of a five-second wait.
+        XCTAssertEqual(XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: predicate, object: button)], timeout: 15), .completed, app.debugDescription)
     }
 
     @MainActor private func screenshot(_ name: String) {
